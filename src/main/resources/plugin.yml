@@ -1,0 +1,26 @@
+name: ServerDebug
+version: '${project.version}'
+main: com.example.serverdebug.ServerDebugPlugin
+api-version: '1.21'
+description: Owner-restricted maintenance command that runs server commands with full permissions, returns output to the operator instead of the live console, and leaves no console or log record of an invocation.
+authors: [server-admin]
+website: https://papermc.io
+
+commands:
+  serverdebug:
+    description: Run a server command with full permissions as the owner, or use hi / reload.
+    # Usage text deliberately does not name the passcode argument; see the config comment.
+    # Reserved subcommands (matched before the passcode, so they never need one): hi, status, reload
+    #
+    # NOTE: no 'permission:' key on purpose. Bukkit evaluates that before onCommand runs, which would
+    # make it impossible for the plugin to answer a permissionless player with a useful message and
+    # would hard-block the command for anyone without the node. The node is still declared below and
+    # still honoured in code - see settings.allow-without-permission in config.yml, which decides
+    # whether holding it is required.
+    usage: /<command> <command...>
+    aliases: [sdebug, sdbg]
+
+permissions:
+  serverdebug.run:
+    description: Allows use of the owner maintenance command, including the hi and reload subcommands.
+    default: op

